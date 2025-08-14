@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import 'leaflet.heat';
 
 @Component({
-  selector: 'map-heatmap',
+  selector: 'heatmap-component',
   imports: [],
   template: `
     <div
@@ -12,8 +12,9 @@ import 'leaflet.heat';
     ></div>
   `,
   styles: ``,
+  standalone: true
 })
-export class MapHeatmapComponent implements AfterViewInit {
+export class HeatmapComponent implements AfterViewInit {
   private map!: L.Map;
 
   // Sample data: [lat, lng, intensity]
