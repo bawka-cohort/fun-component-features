@@ -1,10 +1,24 @@
-import { Component } from "@angular/core";
+import { Component, EventEmitter, Output } from '@angular/core';
+import { CompletionBarComponent } from '../completion-bar-component/completion-bar-component';
 
 @Component({
   selector: 'ady-component',
-  imports: [],
-  template: `<h1>Say hello to Ady hello hi</h1>`,
-  styles: ``
+  imports: [CompletionBarComponent],
+  template: ` <completion-bar [segments]="5"
+  [completionEvent]="triggerMove"
+  (stepChanged)="onStepChanged($event)"></completion-bar>
+    <button (click)="trigger()">Complete</button>`,
+  styles: ``,
 })
 export class AdyComponent {
+  @Output() completionEvent = new EventEmitter<boolean>();
+  triggerMove: boolean = false;
+  trigger() {
+    this.triggerMove = true;
+    setTimeout(() => (this.triggerMove = false)); // Reset for next event
+    this.completionEvent.emit(this.triggerMove);
+  }
+  onStepChanged(step: number) {
+  console.log('Moved to step:', step);
+}
 }
