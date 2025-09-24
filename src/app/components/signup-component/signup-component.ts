@@ -1,12 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
 import { SupabaseService } from '../../services/supabase-service';
 import { lastValueFrom } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'login-component',
-  imports: [FormsModule, RouterOutlet, RouterLink],
+  selector: 'signup-component',
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div
       class="flex min-h-screen items-center justify-center bg-[#fff7f2] px-6"
@@ -25,19 +26,26 @@ import { lastValueFrom } from 'rxjs';
 
         <!-- Subtitle -->
         <p class="mb-8 text-base text-gray-800 sm:text-sm">
-          Welcome to Munch
+          Create your account
         </p>
 
         <!-- Form -->
-        <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="space-y-4">
+        <form (ngSubmit)="onSignUp()" #signupForm="ngForm" class="space-y-4">
           <input
-            type="text"
+            type="email"
             name="username"
             [(ngModel)]="user.username"
+            #username="ngModel"
+            email
             placeholder="Username"
             required
             class="w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-base focus:border-[#f8746c] focus:outline-none"
           />
+
+          <div class="text-sm text-red-600 mt-1" *ngIf="username.invalid && (username.dirty || username.touched || signupForm.submitted)">
+            <div *ngIf="username.errors?.['required']">Email is required.</div>
+            <div *ngIf="username.errors?.['email']">Please enter a valid email address.</div>
+          </div>
 
           <input
             type="password"
@@ -50,36 +58,25 @@ import { lastValueFrom } from 'rxjs';
 
           <button
             type="submit"
-            [disabled]="loginForm.invalid"
+            [disabled]="signupForm.invalid"
             class="w-full rounded-full border border-[#f8746c] bg-[#f8746c]/20 px-5 py-3 text-base font-semibold text-[#f8746c] transition active:scale-95 disabled:opacity-50"
-            routerLink="/landing"
+            routerLink="/login"
           >
-            Log In
+            Sign Up
           </button>
         </form>
-
-        <!-- Social Login -->
-        <p class="mt-8 text-sm text-gray-700"><a routerLink="/signup">Create an account</a></p>
-
-        <p class="mt-8 text-sm text-gray-700">Log in using</p>
-        <div class="mt-4 flex justify-center space-x-8 text-3xl">
-          <!-- Replace with SVGs for real icons -->
-          <span class="text-[#DB4437]">G</span>
-          <span class="text-[#1877F2]">f</span>
-          <span class="text-black"></span>
-        </div>
       </div>
     </div>
-    <router-outlet></router-outlet>
   `,
   styles: ``,
 })
-export class LoginComponent {
+export class SignupComponent {
   supabaseService = inject(SupabaseService)
 
   user = { username: '', password: '' };
 
-  onLogin() {
-    lastValueFrom(this.supabaseService.signIn(this.user.password, this.user.username))
+  onSignUp() {
+   lastValueFrom(this.supabaseService.signUp(this.user.password, this.user.username))
   }
+
 }
