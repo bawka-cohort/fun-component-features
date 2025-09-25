@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { CompletionBarComponent } from '../completion-bar-component/completion-bar-component';
-import { LoginComponent } from '../login-component/login-component';
+import { CompletionBarComponent } from './completion-bar-component/completion-bar-component';
+import { LoginComponent } from './login-component/login-component';
 
 @Component({
   selector: 'ady-component',
