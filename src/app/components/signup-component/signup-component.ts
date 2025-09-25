@@ -30,7 +30,7 @@ import { RouterLink } from '@angular/router';
         </p>
 
         <!-- Form -->
-        <form (ngSubmit)="onSignUp()" #signupForm="ngForm" class="space-y-4">
+        <form #signupForm="ngForm" class="space-y-4">
           <input
             type="email"
             name="username"
@@ -61,6 +61,7 @@ import { RouterLink } from '@angular/router';
             [disabled]="signupForm.invalid"
             class="w-full rounded-full border border-[#f8746c] bg-[#f8746c]/20 px-5 py-3 text-base font-semibold text-[#f8746c] transition active:scale-95 disabled:opacity-50"
             routerLink="/login"
+            (click)="onSignUp()"
           >
             Sign Up
           </button>
@@ -76,6 +77,7 @@ export class SignupComponent {
   user = { username: '', password: '' };
 
   onSignUp() {
+    console.log('I am in onSignUp')
    lastValueFrom(this.supabaseService.signUp(this.user.password, this.user.username))
   }
 

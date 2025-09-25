@@ -8,7 +8,8 @@ import {
 	from,
 	map,
 	mergeMap,
-	of
+	of,
+	tap
 } from 'rxjs';
 
 @Injectable({
@@ -20,10 +21,13 @@ export class SupabaseService {
   supabase = new SupabaseClient(this.supabaseUrl, this.supabaseKey);
 
   signUp(password: string, email: string) {
+		console.log('I am in singnup supabase service')
     return combineLatest([of(password), of(email)]).pipe(
       mergeMap(([password, email]) => {
+				console.log('I am calling the supabase auth signup')
         return this.supabase.auth.signUp({ email, password });
       }),
+			tap((response) => console.log('response: ', response)),
       catchError((error) => {
         console.log('Error during sign-up:', error);
         throw error;
@@ -36,6 +40,7 @@ export class SupabaseService {
       mergeMap(([password, email]) => {
         return this.supabase.auth.signInWithPassword({ email, password });
       }),
+			tap((response) => console.log('response: ', response)),
       catchError((error) => {
         console.log('Error during sign-in:', error);
         throw error;
