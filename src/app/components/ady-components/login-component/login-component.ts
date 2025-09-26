@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
   FormControl,
@@ -7,9 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { SupabaseService } from '../../../services/supabase-service';
 import { lastValueFrom, map, tap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { SupabaseService } from '../../../services/supabase-service';
 
 @Component({
   selector: 'login-component',
@@ -21,22 +21,14 @@ import { AsyncPipe } from '@angular/common';
     ReactiveFormsModule,
   ],
   template: `
-    @if (viewModel$ | async; as vm) {
+    @if (signIn$ | async; as vm) {
     <div
       class="flex min-h-screen items-center justify-center bg-[#fff7f2] px-6"
     >
       <div class="w-full max-w-xs sm:max-w-sm text-center">
         <!-- Logo Circle with Bite -->
-        <div
-          class="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center rounded-full bg-[#ff7b7b] shadow-md"
-        >
-          <span class="text-lg font-semibold text-white">munch</span>
-          <!-- Bite cutout -->
-          <div
-            class="absolute right-[-12px] top-5 h-10 w-10 rounded-full bg-[#fff7f2]"
-          ></div>
-        </div>
-
+         <img src="assets/munch.svg" alt="Munch Logo" class="mx-auto mb-8 h-28 w-28"/>
+         
         <!-- Subtitle -->
         <p class="mb-8 text-base text-gray-800 sm:text-sm">Welcome to Munch</p>
 
@@ -44,48 +36,35 @@ import { AsyncPipe } from '@angular/common';
         <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-4">
           <input
             type="text"
-            name="username"
-            [(ngModel)]="user.username"
-            placeholder="Username"
+            name="email"
+            placeholder="Email"
             required
             class="w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-base focus:border-[#f8746c] focus:outline-none"
-            formControlName="username"
+            formControlName="email"
           />
+
+          @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched) {
+            <p class="text-red-600">Please enter a valid email address.</p>
+          }
 
           <input
             type="password"
             name="password"
-            [(ngModel)]="user.password"
             placeholder="Password"
             required
             class="w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-base focus:border-[#f8746c] focus:outline-none"
             formControlName="password"
           />
 
-          <!-- <button
-            type="submit"
-            [disabled]="loginForm.invalid"
-            class="w-full rounded-full border border-[#f8746c] bg-[#f8746c]/20 px-5 py-3 text-base font-semibold text-[#f8746c] transition active:scale-95 disabled:opacity-50"
-            routerLink="/landing"
-            (click)="onLogin()"
-          >
-            Log In
-          </button> -->
-
-          @if(vm.signInResponse?.error?.code === "invalid_credentials") {
-          <p class="text-red-600">
-            Invalid username or password. Please try again.
-          </p>
+           @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched) {
+            <p class="text-red-600">Please enter a valid password.</p>
           }
 
-          <!-- <button
-            type="submit"
-            [disabled]="loginForm.invalid"
-            class="w-full rounded-full border border-[#f8746c] bg-[#f8746c]/20 px-5 py-3 text-base font-semibold text-[#f8746c] transition active:scale-95 disabled:opacity-50"
-            (click)="onLogin()"
-          >
-            Log In
-          </button> -->
+          @if (vm.signInResponse?.error?.code === "invalid_credentials") {
+          <p class="text-red-600">
+            Invalid email or password. Please try again.
+          </p>
+          }
 
           <button
             type="submit"
@@ -101,7 +80,7 @@ import { AsyncPipe } from '@angular/common';
           <a routerLink="/signup">Create an account</a>
         </p>
 
-         <p class="mt-8 text-sm text-gray-700">
+        <p class="mt-8 text-sm text-gray-700">
           <a routerLink="/reset-link">Forgot your password?</a>
         </p>
 
@@ -122,30 +101,28 @@ import { AsyncPipe } from '@angular/common';
 })
 export class LoginComponent {
   supabaseService = inject(SupabaseService);
-  router = inject(Router)
+  router = inject(Router);
 
   loginForm = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(6),
     ]),
   });
 
-  //AsyncValidator
-
-  user = { username: '', password: '' };
-
-  viewModel$ = this.supabaseService.signInResponse$.pipe(
+  signIn$ = this.supabaseService.signInResponse$.pipe(
     map((signInResponse) => ({
-      signInResponse: signInResponse,
-    })),
+        signInResponse: signInResponse,
+      })
+    ),
     tap((response) => console.log('login response: ', response))
   );
 
   async onLogin() {
+    const { email, password } = this.loginForm.value;
     const response = await lastValueFrom(
-      this.supabaseService.signIn(this.user.password, this.user.username)
+      this.supabaseService.signIn(password!, email!)
     );
 
     if (response.error) {
