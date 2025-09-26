@@ -15,7 +15,10 @@ import { ResetPasswordComponent } from './components/ady-components/reset-passwo
 export const routes: Routes = [
   {
     path: 'ady',
-    component: AdyComponent,
+    component: GetSessionComponent,
+    resolve: {
+      session: sessionResolver,
+    },
   },
   {
     path: 'signup',
@@ -33,13 +36,6 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-  },
-  {
-    path: 'get-session',
-    component: GetSessionComponent,
-    resolve: {
-      session: sessionResolver
-    }
   },
   {
     path: 'landing',
@@ -60,5 +56,5 @@ export const routes: Routes = [
   {
     path: 'will',
     component: WillComponent,
-  }
+  },
 ];

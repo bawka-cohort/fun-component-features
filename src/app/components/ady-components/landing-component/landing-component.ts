@@ -21,6 +21,6 @@ export class LandingComponent {
   
   onLogOut() {
     lastValueFrom(this.supabaseService.signOut());
-    this.router.navigate(['/get-session']);
+    this.router.navigate(['/ady']);
   }
 }

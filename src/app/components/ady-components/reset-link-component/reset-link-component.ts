@@ -44,12 +44,16 @@ import { SupabaseService } from '../../../services/supabase-service';
           <input
             type="text"
             name="username"
-            [(ngModel)]="user.username"
             placeholder="Username"
             required
             class="w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-base focus:border-[#f8746c] focus:outline-none"
             formControlName="username"
           />
+
+          @if (resetForm.controls['username'].invalid &&
+          resetForm.controls['username'].touched) {
+          <p class="text-red-600">Please enter a valid email.</p>
+          }
 
           <button
             type="submit"
@@ -75,8 +79,6 @@ export class ResetLinkComponent {
     username: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  user = { username: ''};
-
   viewModel$ = this.supabaseService.resetLinkResponse$.pipe(
     map((response) => ({
       response: response,
@@ -85,8 +87,9 @@ export class ResetLinkComponent {
   );
 
   async onResetLink() {
+    const { username } = this.resetForm.value;
     const response = await lastValueFrom(
-      this.supabaseService.resetLink(this.user.username)
+      this.supabaseService.resetLink(username!)
     );
 
     if (response.error) {

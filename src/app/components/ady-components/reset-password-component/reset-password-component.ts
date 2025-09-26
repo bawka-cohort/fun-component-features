@@ -44,12 +44,16 @@ import { SupabaseService } from '../../../services/supabase-service';
           <input
             type="password"
             name="username"
-            [(ngModel)]="user.password"
             placeholder="Password"
             required
             class="w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-base focus:border-[#f8746c] focus:outline-none"
             formControlName="password"
           />
+
+          @if (resetForm.controls['password'].invalid &&
+          resetForm.controls['password'].touched) {
+          <p class="text-red-600">Please enter a valid password.</p>
+          }
 
           <button
             type="submit"
@@ -85,8 +89,9 @@ export class ResetPasswordComponent {
   );
 
   async onResetLink() {
+    const { password } = this.resetForm.value;
     const response = await lastValueFrom(
-      this.supabaseService.resetPassword(this.user.password)
+      this.supabaseService.resetPassword(password!)
     );
 
     if (response.error) {

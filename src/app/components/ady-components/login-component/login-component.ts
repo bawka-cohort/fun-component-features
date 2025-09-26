@@ -27,8 +27,12 @@ import { SupabaseService } from '../../../services/supabase-service';
     >
       <div class="w-full max-w-xs sm:max-w-sm text-center">
         <!-- Logo Circle with Bite -->
-         <img src="assets/munch.svg" alt="Munch Logo" class="mx-auto mb-8 h-28 w-28"/>
-         
+        <img
+          src="assets/munch.svg"
+          alt="Munch Logo"
+          class="mx-auto mb-8 h-28 w-28"
+        />
+
         <!-- Subtitle -->
         <p class="mb-8 text-base text-gray-800 sm:text-sm">Welcome to Munch</p>
 
@@ -43,8 +47,9 @@ import { SupabaseService } from '../../../services/supabase-service';
             formControlName="email"
           />
 
-          @if (loginForm.controls['email'].invalid && loginForm.controls['email'].touched) {
-            <p class="text-red-600">Please enter a valid email address.</p>
+          @if (loginForm.controls['email'].invalid &&
+          loginForm.controls['email'].touched) {
+          <p class="text-red-600">Please enter a valid email address.</p>
           }
 
           <input
@@ -56,11 +61,10 @@ import { SupabaseService } from '../../../services/supabase-service';
             formControlName="password"
           />
 
-           @if (loginForm.controls['password'].invalid && loginForm.controls['password'].touched) {
-            <p class="text-red-600">Please enter a valid password.</p>
-          }
-
-          @if (vm.signInResponse?.error?.code === "invalid_credentials") {
+          @if (loginForm.controls['password'].invalid &&
+          loginForm.controls['password'].touched) {
+          <p class="text-red-600">Please enter a valid password.</p>
+          } @if (vm.signInResponse?.error?.code === "invalid_credentials") {
           <p class="text-red-600">
             Invalid email or password. Please try again.
           </p>
@@ -113,9 +117,8 @@ export class LoginComponent {
 
   signIn$ = this.supabaseService.signInResponse$.pipe(
     map((signInResponse) => ({
-        signInResponse: signInResponse,
-      })
-    ),
+      signInResponse: signInResponse,
+    })),
     tap((response) => console.log('login response: ', response))
   );
 
