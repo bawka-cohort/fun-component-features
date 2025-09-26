@@ -1,15 +1,17 @@
 import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { SupabaseService } from '../../../services/supabase-service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'landing-component',
-  imports: [],
+  imports: [RouterOutlet],
   template: `
     <p>You are logged in!</p>
     <p>Welcome to the landing page.</p>
-    <button (click)="onLogOut()">Logout</button>
+    <button type="submit" (click)="onLogOut()">Logout</button>
+
+    <router-outlet></router-outlet>
   `,
   styles: ``,
 })
@@ -21,5 +23,4 @@ export class LandingComponent {
     lastValueFrom(this.supabaseService.signOut());
     this.router.navigate(['/get-session']);
   }
-
 }
