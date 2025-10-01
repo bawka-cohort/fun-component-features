@@ -4,6 +4,8 @@ import { AnggaComponent } from './components/angga-components/angga-component';
 import { BrianComponent } from './components/brian-components/brian-component';
 import { KevinComponent } from './components/kevin-components/kevin-component';
 import { WillComponent } from './components/will-components/will-component';
+import { WelcomeComponent } from './components/kevin-components/welcome/welcome.component';
+import { LoginComponent } from './components/kevin-components/login/login.component';
 
 export const routes: Routes = [
   {
@@ -25,5 +27,13 @@ export const routes: Routes = [
   {
     path: 'will',
     component: WillComponent,
-  }
+  },
+  {
+    path: 'welcome',
+    component: WelcomeComponent,
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
 ];
