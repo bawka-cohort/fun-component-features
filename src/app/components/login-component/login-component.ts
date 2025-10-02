@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { SupabaseService } from '../../services/supabase-service';
 import { lastValueFrom } from 'rxjs';
+import { GoogleSigninButtonComponent } from '../../shared/google-signin-button/google-signin-button.component';
 
 @Component({
   selector: 'login-component',
-  imports: [FormsModule, RouterOutlet, RouterLink],
+  imports: [FormsModule, RouterOutlet, RouterLink, GoogleSigninButtonComponent],
   template: `
     <div
       class="flex min-h-screen items-center justify-center bg-[#fff7f2] px-6"
@@ -24,9 +25,7 @@ import { lastValueFrom } from 'rxjs';
         </div>
 
         <!-- Subtitle -->
-        <p class="mb-8 text-base text-gray-800 sm:text-sm">
-          Welcome to Munch
-        </p>
+        <p class="mb-8 text-base text-gray-800 sm:text-sm">Welcome to Munch</p>
 
         <!-- Form -->
         <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="space-y-4">
@@ -59,27 +58,34 @@ import { lastValueFrom } from 'rxjs';
         </form>
 
         <!-- Social Login -->
-        <p class="mt-8 text-sm text-gray-700"><a routerLink="/signup">Create an account</a></p>
+        <p class="mt-8 text-sm text-gray-700">
+          <a routerLink="/signup">Create an account</a>
+        </p>
 
-        <p class="mt-8 text-sm text-gray-700">Log in using</p>
+        <!-- <p class="mt-8 text-sm text-gray-700">Log in using</p> -->
         <div class="mt-4 flex justify-center space-x-8 text-3xl">
-          <!-- Replace with SVGs for real icons -->
-          <span class="text-[#DB4437]">G</span>
-          <span class="text-[#1877F2]">f</span>
-          <span class="text-black"></span>
+          <app-google-signin-button
+            (click)="this.supabaseService.logInWithGoogle()"
+          ></app-google-signin-button>
+
+          <!-- <span class="text-[#1877F2]">f</span>
+          <span class="text-black"></span> -->
         </div>
       </div>
     </div>
+
     <router-outlet></router-outlet>
   `,
   styles: ``,
 })
 export class LoginComponent {
-  supabaseService = inject(SupabaseService)
+  supabaseService = inject(SupabaseService);
 
   user = { username: '', password: '' };
 
   onLogin() {
-    lastValueFrom(this.supabaseService.signIn(this.user.password, this.user.username))
+    lastValueFrom(
+      this.supabaseService.signIn(this.user.password, this.user.username)
+    );
   }
 }

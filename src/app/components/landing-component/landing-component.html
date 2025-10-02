@@ -1,0 +1,29 @@
+<div class="flex min-h-screen bg-[#fff7f2] px-6 justify-end items-start pt-2">
+  <div *ngIf="user; else loading" class="flex items-center space-x-4">
+    <div class="p-2">
+      Welcome, {{ user.user_metadata.full_name || user.email }}
+    </div>
+
+    <h2>
+      <img
+        [src]="getProfileImage(user)"
+        alt="Profile picture"
+        width="40"
+        height="40"
+        class="rounded-full inline-block mr-2"
+      />
+    </h2>
+
+    <!-- Compact Blue Sign Out Button -->
+    <button
+      (click)="signOut()"
+      class="px-3 py-1.5 rounded-md bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200 ease-in-out"
+    >
+      Sign Out
+    </button>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p>Loading user...</p>
+</ng-template>
