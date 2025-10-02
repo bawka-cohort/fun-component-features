@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { SupabaseService } from '../../services/supabase-service';
+import { SupabaseService } from '../../../services/supabase-service';
 import { lastValueFrom } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
@@ -62,8 +62,7 @@ import { RouterLink } from '@angular/router';
             class="w-full rounded-full border border-[#f8746c] bg-[#f8746c]/20 px-5 py-3 text-base font-semibold text-[#f8746c] transition active:scale-95 disabled:opacity-50"
             routerLink="/login"
             (click)="onSignUp()"
-          >
-            Sign Up
+          > Sign Up
           </button>
         </form>
       </div>
