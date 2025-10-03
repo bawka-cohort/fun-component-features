@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { createClient, Session, SupabaseClient } from '@supabase/supabase-js';
-import { catchError, combineLatest, from, map, mergeMap, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  from,
+  map,
+  mergeMap,
+  of,
+  tap,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,12 +37,33 @@ export class SupabaseService {
     );
   }
 
+  signInResponse = new BehaviorSubject<any>(null);
+  signInResponse$ = this.signInResponse.asObservable();
+
+  signUpResponse = new BehaviorSubject<any>(null);
+  signUpResponse$ = this.signUpResponse.asObservable();
+
+  resetLinkResponse = new BehaviorSubject<any>(null);
+  resetLinkResponse$ = this.resetLinkResponse.asObservable();
+
+  signOutResponse = new BehaviorSubject<any>(null);
+  signOutResponse$ = this.signOutResponse.asObservable();
+
+  resetPasswordResponse = new BehaviorSubject<any>(null);
+  resetPasswordResponse$ = this.resetPasswordResponse.asObservable();
+
   signUp(password: string, email: string) {
-    console.log('I am in singnup supabase service');
+    console.log('I am in signup supabase service');
     return combineLatest([of(password), of(email)]).pipe(
       mergeMap(([password, email]) => {
         console.log('I am calling the supabase auth signup');
-        return this.supabase.auth.signUp({ email, password });
+        return this.supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: 'http://localhost:4200/login',
+          },
+        });
       }),
       tap((response) => console.log('response: ', response)),
       catchError((error) => {
@@ -48,7 +78,10 @@ export class SupabaseService {
       mergeMap(([password, email]) => {
         return this.supabase.auth.signInWithPassword({ email, password });
       }),
-      tap((response) => console.log('response: ', response)),
+      tap((response) => {
+        console.log('signIn response: ', response),
+          this.signInResponse.next(response);
+      }),
       catchError((error) => {
         console.log('Error during sign-in:', error);
         throw error;
@@ -58,6 +91,10 @@ export class SupabaseService {
 
   signOut() {
     return from(this.supabase.auth.signOut()).pipe(
+      tap((response) => {
+        console.log('signOut response: ', response);
+        this.signOutResponse.next(response);
+      }),
       catchError((error) => {
         console.log('Error during sign-out:', error);
         throw error;
@@ -74,19 +111,32 @@ export class SupabaseService {
     );
   }
 
-  getUser() {
-    return from(this.supabase.auth.getUser()).pipe(
+  resetLink(email: string) {
+    return of(email).pipe(
+      map((email) => {
+        return this.supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: 'http://localhost:4200/reset-password',
+        });
+      }),
+      tap((response) => {
+        console.log('reset link response: ', response);
+        this.resetLinkResponse.next(response);
+      }),
       catchError((error) => {
-        console.log('Error getting session:', error);
+        console.log('Error during reset link:', error);
         throw error;
       })
     );
   }
 
-  resetPassword(email: string) {
-    return of(email).pipe(
-      map((email) => {
-        this.supabase.auth.resetPasswordForEmail(email);
+  resetPassword(password: string) {
+    return of(password).pipe(
+      map((password) => {
+        return this.supabase.auth.updateUser({ password });
+      }),
+      tap((response) => {
+        console.log('reset password response: ', response);
+        this.resetPasswordResponse.next(response);
       }),
       catchError((error) => {
         console.log('Error during reset password:', error);
