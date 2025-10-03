@@ -42,9 +42,17 @@ import { RouterLink } from '@angular/router';
             class="w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-base focus:border-[#f8746c] focus:outline-none"
           />
 
-          <div class="text-sm text-red-600 mt-1" *ngIf="username.invalid && (username.dirty || username.touched || signupForm.submitted)">
+          <div
+            class="text-sm text-red-600 mt-1"
+            *ngIf="
+              username.invalid &&
+              (username.dirty || username.touched || signupForm.submitted)
+            "
+          >
             <div *ngIf="username.errors?.['required']">Email is required.</div>
-            <div *ngIf="username.errors?.['email']">Please enter a valid email address.</div>
+            <div *ngIf="username.errors?.['email']">
+              Please enter a valid email address.
+            </div>
           </div>
 
           <input
@@ -62,7 +70,8 @@ import { RouterLink } from '@angular/router';
             class="w-full rounded-full border border-[#f8746c] bg-[#f8746c]/20 px-5 py-3 text-base font-semibold text-[#f8746c] transition active:scale-95 disabled:opacity-50"
             routerLink="/login"
             (click)="onSignUp()"
-          > Sign Up
+          >
+            Sign Up
           </button>
         </form>
       </div>
@@ -71,13 +80,14 @@ import { RouterLink } from '@angular/router';
   styles: ``,
 })
 export class SignupComponent {
-  supabaseService = inject(SupabaseService)
+  supabaseService = inject(SupabaseService);
 
   user = { username: '', password: '' };
 
   onSignUp() {
-    console.log('I am in onSignUp')
-   lastValueFrom(this.supabaseService.signUp(this.user.password, this.user.username))
+    console.log('I am in onSignUp');
+    lastValueFrom(
+      this.supabaseService.signUp(this.user.password, this.user.username)
+    );
   }
-
 }

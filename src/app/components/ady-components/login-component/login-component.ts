@@ -10,6 +10,7 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { lastValueFrom, map, tap } from 'rxjs';
 import { SupabaseService } from '../../../services/supabase-service';
+import { GoogleSigninButtonComponent } from '../../../shared/google-signin-button/google-signin-button.component';
 
 @Component({
   selector: 'login-component',
@@ -19,6 +20,7 @@ import { SupabaseService } from '../../../services/supabase-service';
     RouterLink,
     AsyncPipe,
     ReactiveFormsModule,
+    GoogleSigninButtonComponent,
   ],
   template: `
     @if (signIn$ | async; as vm) {
@@ -88,10 +90,15 @@ import { SupabaseService } from '../../../services/supabase-service';
           <a routerLink="/reset-link">Forgot your password?</a>
         </p>
 
-        <p class="mt-8 text-sm text-gray-700">Log in using</p>
+        <!-- <p class="mt-8 text-sm text-gray-700">Log in using</p> -->
+        <div class="mt-4">
+          <app-google-signin-button
+            (click)="supabaseService.logInWithGoogle()"
+          ></app-google-signin-button>
+        </div>
+
         <div class="mt-4 flex justify-center space-x-8 text-3xl">
           <!-- Replace with SVGs for real icons -->
-          <span class="text-[#DB4437]">G</span>
           <span class="text-[#1877F2]">f</span>
           <span class="text-black"></span>
         </div>

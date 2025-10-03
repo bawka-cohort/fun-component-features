@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SupabaseClient } from '@supabase/supabase-js';
+import { createClient, Session, SupabaseClient } from '@supabase/supabase-js';
 import {
   BehaviorSubject,
   catchError,
@@ -15,10 +15,27 @@ import {
   providedIn: 'root',
 })
 export class SupabaseService {
-  supabaseUrl = 'https://gfwjmimavnsuhnpjcdci.supabase.co';
-  supabaseKey =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdmd2ptaW1hdm5zdWhucGpjZGNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMTYxMDMsImV4cCI6MjA2ODg5MjEwM30.tVuqkkcsS4RRjZWlZ17_bRBx39I19O9C5TT5NoOVW84';
-  supabase = new SupabaseClient(this.supabaseUrl, this.supabaseKey);
+  // supabaseUrl = 'https://gfwjmimavnsuhnpjcdci.supabase.co';
+  // supabaseKey =
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdmd2ptaW1hdm5zdWhucGpjZGNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMTYxMDMsImV4cCI6MjA2ODg5MjEwM30.tVuqkkcsS4RRjZWlZ17_bRBx39I19O9C5TT5NoOVW84';
+  // supabase = new SupabaseClient(this.supabaseUrl, this.supabaseKey);
+
+  private supabase: SupabaseClient;
+
+  constructor() {
+    this.supabase = createClient(
+      'https://gfwjmimavnsuhnpjcdci.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdmd2ptaW1hdm5zdWhucGpjZGNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMTYxMDMsImV4cCI6MjA2ODg5MjEwM30.tVuqkkcsS4RRjZWlZ17_bRBx39I19O9C5TT5NoOVW84',
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true,
+          storage: localStorage,
+        },
+      }
+    );
+  }
 
   signInResponse = new BehaviorSubject<any>(null);
   signInResponse$ = this.signInResponse.asObservable();
@@ -126,5 +143,29 @@ export class SupabaseService {
         throw error;
       })
     );
+  }
+
+  // Google OAuth
+  logInWithGoogle() {
+    return this.supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'http://localhost:4200/landing', // must match Google + Supabase config
+      },
+    });
+  }
+
+  // Listen for auth state changes
+  onAuthChange(callback: (event: string, session: Session | null) => void) {
+    return this.supabase.auth.onAuthStateChange((event, session) => {
+      callback(event, session);
+    });
+  }
+
+  async getSessionAsync(): Promise<Session | null> {
+    const {
+      data: { session },
+    } = await this.supabase.auth.getSession();
+    return session;
   }
 }
