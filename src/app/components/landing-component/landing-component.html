@@ -1,29 +1,58 @@
-<div class="flex min-h-screen bg-[#fff7f2] px-6 justify-end items-start pt-2">
-  <div *ngIf="user; else loading" class="flex items-center space-x-4">
-    <div class="p-2">
-      Welcome, {{ user.user_metadata.full_name || user.email }}
-    </div>
+<!-- Background and main layout container, similar to signup-component -->
+<div class="flex min-h-screen items-center justify-center bg-[#fff7f2] px-6">
+  <div class="w-full max-w-xs sm:max-w-sm text-center">
+    <!-- Logo Circle with Bite -->
+    <img
+      src="assets/munch.svg"
+      alt="Munch Logo"
+      class="mx-auto mb-8 h-28 w-28"
+    />
 
-    <h2>
+    <!-- Welcome message -->
+    <p class="mb-8 text-base text-gray-800 sm:text-sm">Welcome to Munch!</p>
+  </div>
+</div>
+
+<!-- Top right user menu/icon area -->
+<div class="fixed top-4 right-4">
+  <div *ngIf="user; else loading" class="relative">
+    <!-- User icon to toggle menu -->
+    <button
+      (click)="isMenuOpen = !isMenuOpen"
+      class="flex items-center space-x-2 focus:outline-none"
+      aria-label="User menu"
+    >
       <img
         [src]="getProfileImage(user)"
         alt="Profile picture"
         width="40"
         height="40"
-        class="rounded-full inline-block mr-2"
+        class="rounded-full"
       />
-    </h2>
-
-    <!-- Compact Blue Sign Out Button -->
-    <button
-      (click)="signOut()"
-      class="px-3 py-1.5 rounded-md bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition duration-200 ease-in-out"
-    >
-      Sign Out
     </button>
+
+    <!-- User dropdown menu -->
+    <div
+      *ngIf="isMenuOpen"
+      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#fff7f2] ring-1 ring-[#f8746c]/50 focus:outline-none z-10"
+    >
+      <div class="py-1">
+        <div class="px-4 py-2 border-b border-[#f8746c]/30">
+          <p class="text-sm font-medium text-[#f8746c]">
+            {{ user.user_metadata.full_name || user.email }}
+          </p>
+        </div>
+        <button
+          (click)="signOut(); isMenuOpen = false"
+          class="block w-full text-left px-4 py-2 text-sm text-[#f8746c] hover:bg-[#f8746c]/20 hover:text-[#b91c1c] transition-colors duration-200"
+        >
+          Sign Out
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
 <ng-template #loading>
-  <p>Loading user...</p>
+  <p class="fixed top-4 right-4 text-sm text-gray-500">Loading user...</p>
 </ng-template>

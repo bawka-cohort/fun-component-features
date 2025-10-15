@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LandingComponent implements OnInit {
   user: any = null;
+  isMenuOpen: boolean = false;
 
   constructor(private supabase: SupabaseService, private router: Router) {}
 
