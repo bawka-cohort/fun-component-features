@@ -1,58 +1,269 @@
-<!-- Background and main layout container, similar to signup-component -->
-<div class="flex min-h-screen items-center justify-center bg-[#fff7f2] px-6">
-  <div class="w-full max-w-xs sm:max-w-sm text-center">
-    <!-- Logo Circle with Bite -->
-    <img
-      src="assets/munch.svg"
-      alt="Munch Logo"
-      class="mx-auto mb-8 h-28 w-28"
-    />
+<!-- Main container with light background -->
+<div class="min-h-screen bg-gray-50 pb-24">
+  <!-- Header Section with brown/burgundy background -->
+  <div class="bg-[#7d5a50] rounded-b-3xl px-6 pt-6 pb-8 shadow-lg">
+    <!-- Logo/Title -->
+    <h1 class="text-white text-5xl font-light tracking-wider mb-6">munch</h1>
 
-    <!-- Welcome message -->
-    <p class="mb-8 text-base text-gray-800 sm:text-sm">Welcome to Munch!</p>
-  </div>
-</div>
-
-<!-- Top right user menu/icon area -->
-<div class="fixed top-4 right-4">
-  <div *ngIf="user; else loading" class="relative">
-    <!-- User icon to toggle menu -->
-    <button
-      (click)="isMenuOpen = !isMenuOpen"
-      class="flex items-center space-x-2 focus:outline-none"
-      aria-label="User menu"
-    >
-      <img
-        [src]="getProfileImage(user)"
-        alt="Profile picture"
-        width="40"
-        height="40"
-        class="rounded-full"
+    <!-- Search Bar -->
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="search restaurants/cuisines..."
+        class="w-full px-6 py-4 rounded-full bg-white text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 pr-14"
       />
-    </button>
-
-    <!-- User dropdown menu -->
-    <div
-      *ngIf="isMenuOpen"
-      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#fff7f2] ring-1 ring-[#f8746c]/50 focus:outline-none z-10"
-    >
-      <div class="py-1">
-        <div class="px-4 py-2 border-b border-[#f8746c]/30">
-          <p class="text-sm font-medium text-[#f8746c]">
-            {{ user.user_metadata.full_name || user.email }}
-          </p>
-        </div>
-        <button
-          (click)="signOut(); isMenuOpen = false"
-          class="block w-full text-left px-4 py-2 text-sm text-[#f8746c] hover:bg-[#f8746c]/20 hover:text-[#b91c1c] transition-colors duration-200"
+      <button
+        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          Sign Out
-        </button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Popular & Trending Section -->
+  <div class="mt-6 px-6">
+    <h2 class="text-2xl font-normal mb-4 text-gray-900">Popular & Trending</h2>
+    <div class="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+      <div
+        *ngFor="let restaurant of popularRestaurants"
+        class="flex-shrink-0 w-64 bg-white rounded-2xl shadow-md overflow-hidden"
+      >
+        <div class="relative h-48">
+          <img
+            [src]="restaurant.image"
+            [alt]="restaurant.name"
+            class="w-full h-full object-cover"
+          />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4"
+          >
+            <p class="text-white text-sm font-medium">{{ restaurant.name }}</p>
+            <div class="flex items-center justify-between mt-1">
+              <div class="flex items-center space-x-1">
+                <span class="text-white text-sm">{{ restaurant.rating }}</span>
+                <svg
+                  class="w-4 h-4 text-yellow-400 fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
+                  />
+                </svg>
+              </div>
+              <span class="text-white text-xs">{{ restaurant.distance }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recommendations from people you follow Section -->
+  <div class="mt-8 px-6">
+    <h2 class="text-2xl font-normal mb-4 text-gray-900">
+      Recommendations from people you follow
+    </h2>
+    <div class="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+      <div
+        *ngFor="let rec of followingRecommendations"
+        class="flex-shrink-0 w-40 bg-white rounded-2xl shadow-md overflow-hidden relative"
+      >
+        <div class="h-60">
+          <img
+            [src]="rec.image"
+            [alt]="rec.name"
+            class="w-full h-full object-cover"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"
+          ></div>
+
+          <!-- Badge/Text overlay if exists -->
+          <div
+            *ngIf="rec.badge"
+            class="absolute top-3 left-3 right-3 bg-white/90 rounded-lg px-2 py-1"
+          >
+            <p class="text-xs text-gray-800 text-center leading-tight">
+              {{ rec.badge }}
+            </p>
+          </div>
+
+          <!-- Text overlay -->
+          <div
+            *ngIf="!rec.badge && rec.name !== 'You have to come here' && rec.name !== 'Best pizza ever!'"
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          >
+            <p class="text-white text-xl font-bold text-center">
+              {{ rec.name }}
+            </p>
+          </div>
+
+          <div
+            *ngIf="rec.name === 'You have to come here'"
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full px-3"
+          >
+            <p class="text-white text-sm text-center leading-tight">
+              {{ rec.name }}
+            </p>
+          </div>
+
+          <!-- Rating and Avatar at bottom -->
+          <div
+            class="absolute bottom-3 left-3 right-3 flex items-center justify-between"
+          >
+            <div
+              class="flex items-center space-x-1 bg-black/50 rounded-full px-2 py-1"
+            >
+              <span class="text-white text-xs">{{ rec.rating }}</span>
+              <svg
+                class="w-3 h-3 text-yellow-400 fill-current"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
+                />
+              </svg>
+            </div>
+            <img
+              [src]="rec.userAvatar"
+              alt="User"
+              class="w-8 h-8 rounded-full border-2 border-white"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local Recommendations Section -->
+  <div class="mt-8 px-6 pb-6">
+    <h2 class="text-2xl font-normal mb-4 text-gray-900">
+      Local Recommendations
+    </h2>
+    <div class="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+      <div
+        *ngFor="let restaurant of localRecommendations"
+        class="flex-shrink-0 w-64 bg-white rounded-2xl shadow-md overflow-hidden"
+      >
+        <div class="relative h-48">
+          <img
+            [src]="restaurant.image"
+            [alt]="restaurant.name"
+            class="w-full h-full object-cover"
+          />
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4"
+          >
+            <p class="text-white text-sm font-medium">{{ restaurant.name }}</p>
+            <div class="flex items-center justify-between mt-1">
+              <div class="flex items-center space-x-1">
+                <span class="text-white text-sm">{{ restaurant.rating }}</span>
+                <svg
+                  class="w-4 h-4 text-yellow-400 fill-current"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
+                  />
+                </svg>
+              </div>
+              <span class="text-white text-xs">{{ restaurant.distance }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<ng-template #loading>
-  <p class="fixed top-4 right-4 text-sm text-gray-500">Loading user...</p>
-</ng-template>
+<!-- Fixed Footer Navigation -->
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+  <div
+    class="bg-black rounded-full px-8 py-4 shadow-2xl flex items-center space-x-8"
+  >
+    <!-- Home Icon -->
+    <button class="flex flex-col items-center focus:outline-none">
+      <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+        />
+      </svg>
+    </button>
+
+    <!-- Heart/Favorites Icon -->
+    <button class="flex flex-col items-center focus:outline-none">
+      <svg
+        class="w-7 h-7 text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        />
+      </svg>
+    </button>
+
+    <!-- Plus/Add Icon -->
+    <button class="flex flex-col items-center focus:outline-none">
+      <svg
+        class="w-7 h-7 text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        />
+      </svg>
+    </button>
+
+    <!-- User/Profile Icon -->
+    <button class="flex flex-col items-center focus:outline-none">
+      <svg
+        class="w-7 h-7 text-white"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
