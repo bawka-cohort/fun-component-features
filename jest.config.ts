@@ -30,6 +30,9 @@ export default {
         'node_modules/(?!(angular-imask|angular-svg-icon|@angular|ngrx|uuid|@vg-constellation|@ngneat))',
     ],
     coverageDirectory: 'reports/coverage',
+    collectCoverageFrom: [
+			'src/app/*'
+		],
     coverageThreshold: {
         global: {
             branches: 100,
