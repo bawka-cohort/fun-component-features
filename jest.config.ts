@@ -31,7 +31,8 @@ export default {
     ],
     coverageDirectory: 'reports/coverage',
     collectCoverageFrom: [
-			'src/app/*'
+			'src/app/*.ts',
+			'src/app/**/*.ts',
 		],
     coverageThreshold: {
         global: {
