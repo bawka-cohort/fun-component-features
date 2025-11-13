@@ -1,0 +1,19 @@
+{
+    "semi": false,
+    "singleQuote": true,
+    "proseWrap": "never",
+    "trailingComma": "es5",
+    "printWidth": 120,
+    "tabWidth": 4,
+    "arrowParens": "avoid",
+    "quoteProps": "consistent",
+    "endOfLine": "auto",
+    "overrides": [
+        {
+            "files": ".*rc",
+            "options": {
+                "parser": "json"
+            }
+        }
+    ]
+}
