@@ -4,7 +4,7 @@
     "proseWrap": "never",
     "trailingComma": "es5",
     "printWidth": 120,
-    "tabWidth": 4,
+    "tabWidth": 2,
     "arrowParens": "avoid",
     "quoteProps": "consistent",
     "endOfLine": "auto",

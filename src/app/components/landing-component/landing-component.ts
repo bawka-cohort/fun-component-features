@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SupabaseService } from '../../services/supabase-service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { User } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-welcome',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './landing-component.html',
 })
 export class LandingComponent implements OnInit {
-  user: any = null;
+  user: User | null = null;
   isMenuOpen: boolean = false;
 
   constructor(private supabase: SupabaseService, private router: Router) {}
@@ -31,8 +32,8 @@ export class LandingComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  getProfileImage(user: any): string {
-    let url = user.user_metadata.avatar_url;
+  getProfileImage(user: User): string {
+    let url = user.user_metadata['avatar_url'];
     if (url.includes('googleusercontent.com') && !url.includes('=s')) {
       url += '?sz=100';
     }

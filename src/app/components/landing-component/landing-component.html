@@ -39,7 +39,7 @@
       <div class="py-1">
         <div class="px-4 py-2 border-b border-[#f8746c]/30">
           <p class="text-sm font-medium text-[#f8746c]">
-            {{ user.user_metadata.full_name || user.email }}
+            {{ user.user_metadata['full_name'] || user.email }}
           </p>
         </div>
         <button
